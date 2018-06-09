@@ -135,14 +135,27 @@ $mail->setLanguage('pl', '/optional/path/to/language/directory/');
 //send the message, check for errors
 if (!$mail->send()) {
     echo "Mailer Error: " . $mail->ErrorInfo;
-} else {
+} 
 
-    //Section 2: IMAP
-    //Uncomment these to save your message in the 'Sent Mail' folder.
-    #if (save_mail($mail)) {
-    #    echo "Message saved!";
-    #}
-}
+$mail->Subject = 'Masz nowe zamówienie do realizacji w Twoim sklepie.';
+$mail->addAddress('donqrakko@gmail.com');
+$mail->Body = 'Nowe zamówienie w Twoim sklepie, oto dane kupującego. Pamiętaj, że zarządzać klientami możesz w panelu administracyjnym.<br/><br/>' .
+            'Numer zamówienia: ' . $id . '<br />' .
+            'Imie: ' . $imie . '<br />' .
+            'Nazwisko: ' . $nazwisko . '<br />' .
+            'E-mail: ' . $email . '<br />' .
+            'Adres: ' . $adres . '<br />' .
+            'Adres 2: ' . $adres2 . '<br />' .
+            'Uwagi: ' . $uwagi . '<br />' .
+            'Co kupiono: <br /><b>' . implode("<br /> ", $cokupiono) . '</b><br />' .
+            'Łączna ilość przedmiotów: ' . $totalquantity . ' sztuk<br />'.
+            'Do zapłacenia: ' . $totalsum . ' zł';
+
+if (!$mail->send()) {
+    echo "Mailer Error: " . $mail->ErrorInfo;
+} 
+
+session_destroy();
 //Section 2: IMAP
 //IMAP commands requires the PHP IMAP Extension, found at: https://php.net/manual/en/imap.setup.php
 //Function to call which uses the PHP imap_*() functions to save messages: https://php.net/manual/en/book.imap.php
@@ -165,17 +178,15 @@ function save_mail($mail)
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Sklepik kurakowy</title>
 </head>
 <body>
 <div style="width: 640px; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">
-  <h1>Zamówienie złożone! Dalsze szczegóły otrzymasz na swoją skrzynkę e-mail którą podałeś/aś w zamówieniu.</h1>
-  <div align="center">
-    <a href="https://github.com/PHPMailer/PHPMailer/"><img src="img/phpmailer_mini.png" height="90" width="340" alt="PHPMailer rocks"></a>
-  </div>
-  <p>Gratuluje!</p>
-  <p></p>
+  
+   <h2>Zamówienie złożone! Dalsze szczegóły otrzymasz na swoją skrzynkę e-mail którą podałeś/aś w zamówieniu.</h2>
+
+
 </div>
 </body>
 </html>

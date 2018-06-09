@@ -1,26 +1,47 @@
-<?php  
-    // kasowanie dodanego rekordu w sklepie
-    if(filter_input(INPUT_GET, 'action') == 'deleteid'){
-        if (isset($_GET['id']) && is_numeric($_GET['id'])){
-            // get id value
-            $connect = mysqli_connect('localhost', 'root', '', 'cart');
-            $id = $_GET['id'];
-            $query = "DELETE FROM products WHERE id=$id";
-            // delete the entry
-            $result = mysqli_query($connect, $query);
-        }
-    }
-    if(filter_input(INPUT_GET, 'action') == 'deleteuser'){
-        if (isset($_GET['id']) && is_numeric($_GET['id'])){
-            // get id value
-            $connect = mysqli_connect('localhost', 'root', '', 'cart');
-            $id = $_GET['id'];
-            $query = "DELETE FROM klient WHERE id=$id";
-            // delete the entry
-            $result = mysqli_query($connect, $query);
-        }
-    }
 
+<?php
+    if(filter_input(INPUT_POST, "dodaj")){
+        
+        $nazwa = filter_input(INPUT_POST, 'nazwa');
+        $cena = filter_input(INPUT_POST, 'cena');
+        $obrazek = filter_input(INPUT_POST, 'obrazek');
+        if( empty($nazwa) || empty($cena) || empty($obrazek)) {
+            echo "Wypełnij wszystkie pola. Wracam do poprzedniej strony.";
+            echo "<script>setTimeout(\"location.href = 'cart.php';\",1500);</script>";
+            die();
+        }
+        $server = "localhost";
+        $user = "root";
+        $pass = "";
+        $dbname = "cart";
+
+        //Creating connection for mysqli
+
+        $conn = new mysqli($server, $user, $pass, $dbname);
+        $directory = "img/";
+        //Checking connection
+
+        if($conn->connect_error){
+         die("Connection failed:" . $conn->connect_error);
+        }
+
+        $nazwa = mysqli_real_escape_string($conn, filter_input(INPUT_POST, "nazwa"));
+        $cena = mysqli_real_escape_string($conn, filter_input(INPUT_POST, "cena"));
+        $obrazek = mysqli_real_escape_string($conn, $directory . filter_input(INPUT_POST, "obrazek"));
+
+        $sql = "INSERT INTO products (name, price, image) VALUES ('$nazwa', '$cena', '$obrazek')";
+
+        if($conn->query($sql) === TRUE){
+            echo "Dodawanie zakończone. Wracam do poprzedniej strony.";
+            echo "<script>setTimeout(\"location.href = 'cart.php';\",1500);</script>";
+            die();
+        }
+        else
+        {
+         echo "Błąd" . $sql . "<br/>" . $conn->error;
+        }
+        $conn->close();
+    }
 ?>
 
 <!DOCTYPE HTML>
@@ -35,14 +56,14 @@
     </head>
     <body>
 
-      <div class="container">
+      <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-4 col-md-4">
-                    <form action="insert.php" method="post">
+                    <form action="cart.php" method="post" enctype="multipart/form-data">
                     <label>Nazwa towaru</label><br/><input class="form-control form-control-sm" type="text" name="nazwa" id="nazwa"><br/>
                     <label>Obrazek (nazwaobrazka.jpg)</label></br><input class="form-control form-control-sm" type="text" name="obrazek" id="obrazek"><br/><br/>
                     <label>Cena</label></br><input class="form-control form-control-sm" type="number" min="0" step="0.01" name="cena" id="cena"><br/><br/>
-                    <input type="submit" value="Wyślij">
+                    <input type="submit" name="dodaj" value="Wyślij">
                     </form>
                 </div>
                 <div class="col-sm-4 col-md-4">
@@ -70,45 +91,15 @@
                         <input type="file" name="attachment">
                         <input type="submit" name="submit" value="Upload" >
                     </form>
+                   
                 </div>
-                <a href="clients.php" class="btn btn-info" target="_BLANK">Wyświetl klientów</a>
             </div>
       </div>
             <div class="container-fluid" style="margin-top: 40px;">
-            <div class="row">
-          <?php
-                $connect = mysqli_connect('localhost', 'root', '', 'cart');
-                $query = 'SELECT * FROM products ORDER by id ASC';
-                //mysqli_query — Performs a query on the database
-                $result = mysqli_query($connect, $query);
-
-                if ('result'):
-                    if (mysqli_num_rows($result) > 0):  // mysqli_num_rows - Zwróć liczbę wierszy w zestawie wyników
-                        while ($product = mysqli_fetch_assoc($result)): // mysqli_fetch_assoc - Pobierz wiersz wyniku jako tablicę w pętli dla każdego id
-                            ?>
-                            <div class="col-sm-4 col-md-4" style="margin:5px;">
-                                <form method="post" action="index.php?action=add&id=<?php echo $product['id']; ?>">
-                                    <div class="products">
-                                        <img src="<?php echo $product['image']; ?>" class="img-responsive" style="max-width: 255px; max-height: 255px;"/>
-                                        <h4 class="text-info"><?php echo $product['name']; ?></h4>
-                                        <h4><?php echo $product['price']; ?> zł</h4>
-                                        <input type ="text" name="quantity" class="form-control" value="1" />
-                                        <input type="hidden" name="name" value="<?php echo $product['name']; ?>" />
-                                        <input type="hidden" name="price" value="<?php echo $product['price']; ?>" />
-                                         <a href="cart.php?action=deleteid&id=<?php echo $product['id']; ?>">
-                                                <div class="btn-danger">Usuń</div>
-                                           </a>
-                                    </div>
-                                </form>
-                            </div>
-                            <?php
-                        endwhile;
-                    endif;
-                endif;
-                ?>
-            </div>
+                 <a href="clients.php" class="btn btn-info" target="_BLANK">Klienci</a>
+                 <a href="products.php" class="btn btn-info" target="_BLANK">Produkty</a>
+                 <a href="index.php" class="btn btn-info" target="_BLANK">Spierdalaj na strone główną sklepu</a>
             </div>
     </body>  
 </html> 
 
-  

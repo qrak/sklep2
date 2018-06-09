@@ -66,6 +66,17 @@ if(filter_input(INPUT_POST, "add_to_cart")){
     
 ?>
 
+<script type="text/javascript">
+
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display === 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+</script>
+
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -78,12 +89,12 @@ if(filter_input(INPUT_POST, "add_to_cart")){
     </head>
     <body>
         
-        
-            <div class="container">
+            <div class="col-md-auto">
+                <a href="#" id="koszykbutton" class="btn btn-info" onclick="toggle_visibility('foo');">Koszyk</a>
+            </div>
+            <div class="container" id="foo" style="display: none;">
                 <div class="row justify-content-center">
-                    <div class="col-md-auto">
-                        <button type="button" class="btn btn-primarybtn-sm btn-info" id='hideshow' style='margin: 10px;'><span class="glyphicon glyphicon-shopping-cart"></span>Koszyk</button>      
-                    </div>
+
                     <div class="col">
                         <div class="panel">
                             <div class="content">
@@ -164,7 +175,7 @@ if(filter_input(INPUT_POST, "add_to_cart")){
                     if (mysqli_num_rows($result) > 0):  // mysqli_num_rows - Zwróć liczbę wierszy w zestawie wyników
                         while ($product = mysqli_fetch_assoc($result)): // mysqli_fetch_assoc - Pobierz wiersz wyniku jako tablicę w pętli dla każdego id
                             ?>
-                            <div class="col-sm-4 col-md-4">
+                            <div class="col-sm-6 col-md-6">
                                 <form method="post" action="index.php?action=add&id=<?php echo $product['id']; ?>">
                                     <div class="products">
                                         <img src="<?php echo $product['image']; ?>" class="img-responsive"  style="max-width: 255px; max-height: 255px;"/>
@@ -173,7 +184,7 @@ if(filter_input(INPUT_POST, "add_to_cart")){
                                         <input type ="text" name="quantity" class="form-control" value="1" />
                                         <input type="hidden" name="name" value="<?php echo $product['name']; ?>" />
                                         <input type="hidden" name="price" value="<?php echo $product['price']; ?>" />
-                                        <input type="submit" name="add_to_cart" class="btn btn-info" id="btn-id" value="dodaj do koszyka" data-loading-text="Dodano" style="margin-top: 5px;"/>
+                                        <input type="submit" name="add_to_cart" onclick="alert('Dodano do koszyka');" class="btn btn-info" id="btn-id" value="dodaj do koszyka" data-loading-text="Dodano" style="margin-top: 5px;"/>
                                     </div>
                                 </form>
                             </div>
