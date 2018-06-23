@@ -246,8 +246,6 @@ if(filter_input(INPUT_POST, "add_to_cart")){
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                 }
-                
-
                 if ('result'):
                     if (mysqli_num_rows($result) > 0):  // mysqli_num_rows - Zwróć liczbę wierszy w zestawie wyników
                         while ($product = mysqli_fetch_assoc($result)): // mysqli_fetch_assoc - Pobierz wiersz wyniku jako tablicę w pętli dla każdego id
@@ -291,7 +289,6 @@ if(filter_input(INPUT_POST, "add_to_cart")){
        
         </div>
     </section>
-
     <!-- Footer -->
     <footer>
 <footer>
@@ -302,11 +299,9 @@ if(filter_input(INPUT_POST, "add_to_cart")){
           </div>
           <div class="col-md-4">
             <ul class="list-inline social-buttons">
-  
               <li class="list-inline-item">
                 <span class="copyright">Copyright &copy; Piotr Kurnicki <?php echo date("Y"); ?></span>
               </li>
-    
             </ul>
           </div>
           <div class="col-md-4">
