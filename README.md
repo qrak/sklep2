@@ -7,7 +7,7 @@
     define('DB_USERNAME', 'root');
     define('DB_PASSWORD', '');
     define('DB_DATABASE', 'cart');
-    
-Ustawiamy stałe naszej bazy danych mysql
+    Ustawiamy stałe naszej bazy danych mysql
+- Reszta w configu powinna być jasna
 - Sklep obsługuje php w wersji 7
 - Reszta powinna być jasna
