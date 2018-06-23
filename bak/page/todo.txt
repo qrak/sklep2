@@ -1,2 +1,0 @@
-- u¿yæ isset POST
-- sprawdziæ wszêdzie czy jest mysqli_real_escape_string
