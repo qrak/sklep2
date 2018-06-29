@@ -16,8 +16,8 @@
     if($_FILES['attachment']['size'] > 300000){
         echo "Plik jest za duży. Max 300kb";
     }
-    else if($extension != "jpeg" && $extension != "jpg"){
-        echo "Tylko pliki o rozszerzeniu jpg i jpeg!";
+    else if($extension != "jpeg" && $extension != "jpg" && $extension != "png"){
+        echo "Tylko pliki o rozszerzeniu jpg, jpeg, png!";
     }
     else if(file_exists($targetFile)){
         echo "Plik już istnieje";
