@@ -1,6 +1,7 @@
 <?php
-    include_once "config/config.php";
     session_start();
+    include_once "config/config.php";
+    
 
     if(!filter_input(INPUT_POST, 'submit')){
         echo '<h4>Wracam na strone sklepu...</h4>';
@@ -14,13 +15,24 @@
         exit;
     }
 
-    $ip = filter_input(INPUT_SERVER, '@_SERVER');
-    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$secretKey."&response=".$captcha."&remoteip=".$ip);
-    $responseKeys = json_decode($response,true);
-    if(intval($responseKeys["success"]) !== 1) {
-        echo '<h4>Źle wypełnione captcha.</h4>';
-        exit;
-    }
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+	$data = array(
+		'secret' => $secretKey,
+		'response' => $_POST["g-recaptcha-response"]
+	);
+	$options = array(
+		'http' => array (
+			'method' => 'POST',
+			'content' => http_build_query($data)
+		)
+	);
+	$context  = stream_context_create($options);
+	$verify = file_get_contents($url, false, $context);
+	$captcha_success=json_decode($verify);
+	if ($captcha_success->success==false) {
+		echo "<p>Jesteś botem, won!</p>";
+                exit();
+	}
     use PHPMailer\PHPMailer\PHPMailer;
     require 'vendor/autoload.php';
     
@@ -86,102 +98,86 @@
         }
         mysqli_stmt_close($stmt);
     }
-
-
-$id = mysqli_insert_id($conn);
-//Create a new PHPMailer instance
-$mail = new PHPMailer;
-//Tell PHPMailer to use SMTP
-$mail->isSMTP();
-$mail->CharSet = 'UTF-8';
-//Enable SMTP debugging
-// 0 = off (for production use)
-// 1 = client messages
-// 2 = client and server messages
-$mail->SMTPDebug = 0;
-//Set the hostname of the mail server
-$mail->Host = 'smtp.gmail.com';
-// use
-// $mail->Host = gethostbyname('smtp.gmail.com');
-// if your network does not support SMTP over IPv6
-//Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
-$mail->Port = 587;
-//Set the encryption system to use - ssl (deprecated) or tls
-$mail->SMTPSecure = 'tls';
-//Whether to use SMTP authentication
-$mail->SMTPAuth = true;
-//Username to use for SMTP authentication - use full email address for gmail
-$mail->Username = $myemaillogin;
-//Password to use for SMTP authentication
-$mail->Password = $myemailpassword;
-//Set who the message is to be sent from
-$mail->setFrom($myemail, $myname);
-//Set an alternative reply-to address
-$mail->addReplyTo($myemail, $myname);
-//Set who the message is to be sent to
-$mail->addAddress($email);
-//Set the subject line
-$mail->Subject = 'Nowe zamówienie numer ' . $id . ' ze sklepu.';
-//Read an HTML message body from an external file, convert referenced images to embedded,
-//convert HTML into a basic plain-text alternative body
-$mail->isHTML(true);
-
-
-
-
-
-$mail->Body = 'Złożyłeś nowe zamówienie w sklepie. Oto Twoje dane:<br/><br/>' .
-            'Numer zamówienia: ' . $id . '<br />' .
-            'Imie: ' . $imie . '<br />' .
-            'Nazwisko: ' . $nazwisko . '<br />' .
-            'E-mail: ' . $email . '<br />' .
-            'Adres: ' . $adres . '<br />' .
-            'Adres 2: ' . $adres2 . '<br />' .
-            'Uwagi: ' . $uwagi . '<br />' .
-            'Co kupiono: <br /><b>' . implode("<br /> ", $cokupiono) . '</b><br />' .
-            'Łączna ilość przedmiotów: ' . $totalquantity . ' sztuk<br />'.
-            'Do zapłacenia: ' . $totalsum . ' zł' . '<br />' .
-            'Dane do przelewu: <br />' .
-            'Numer konta: ' . $bankaccountnumber[0] . '<br />' .
-            'Imie i nazwisko: ' . $bankaccountnumber[1] . '<br />' .
-            'Adres: ' . $bankaccountnumber[2] . '<br />' .
-            'Adres 2: '. $bankaccountnumber[3] . '<br />' .
-            'Tytuł: Opłata za zamówienie nr ' . $id;
-
-
-//Replace the plain text body with one created manually
-$mail->AltBody = '';
-//Attach an image file
-$mail->setLanguage('pl', '/optional/path/to/language/directory/');
-//send the message, check for errors
-if (!$mail->send()) {
-    echo "Mailer Error: " . $mail->ErrorInfo;
-} 
-$mail->ClearAllRecipients();
-$mail->Subject = 'Masz nowe zamówienie do realizacji w Twoim sklepie.';
-$mail->addAddress('donqrakko@gmail.com');
-$mail->Body = 'Nowe zamówienie w Twoim sklepie, oto dane kupującego. Pamiętaj, że zarządzać klientami możesz w panelu administracyjnym.<br/><br/>' .
-            'Numer zamówienia: ' . $id . '<br />' .
-            'Imie: ' . $imie . '<br />' .
-            'Nazwisko: ' . $nazwisko . '<br />' .
-            'E-mail: ' . $email . '<br />' .
-            'Adres: ' . $adres . '<br />' .
-            'Adres 2: ' . $adres2 . '<br />' .
-            'Uwagi: ' . $uwagi . '<br />' .
-            'Co kupiono: <br /><b>' . implode("<br /> ", $cokupiono) . '</b><br />' .
-            'Łączna ilość przedmiotów: ' . $totalquantity . ' sztuk<br />'.
-            'Do zapłacenia: ' . $totalsum . ' zł';
-
-if (!$mail->send()) {
-    echo "Mailer Error: " . $mail->ErrorInfo;
-} 
-
-session_destroy();
-//Section 2: IMAP
-//IMAP commands requires the PHP IMAP Extension, found at: https://php.net/manual/en/imap.setup.php
-//Function to call which uses the PHP imap_*() functions to save messages: https://php.net/manual/en/book.imap.php
-//You can use imap_getmailboxes($imapStream, '/imap/ssl') to get a list of available folders or labels, this can
-//be useful if you are trying to get this working on a non-Gmail IMAP server.
+        $id = mysqli_insert_id($conn);
+        //Create a new PHPMailer instance
+        $mail = new PHPMailer;
+        //Tell PHPMailer to use SMTP
+        $mail->isSMTP();
+        $mail->CharSet = 'UTF-8';
+        //Enable SMTP debugging
+        // 0 = off (for production use)
+        // 1 = client messages
+        // 2 = client and server messages
+        $mail->SMTPDebug = 0;
+        //Set the hostname of the mail server
+        $mail->Host = $hostname;
+        // use
+        // $mail->Host = gethostbyname('smtp.gmail.com');
+        // if your network does not support SMTP over IPv6
+        //Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
+        $mail->Port = 465;
+        //Set the encryption system to use - ssl (deprecated) or tls
+        $mail->SMTPSecure = 'tls';
+        //Whether to use SMTP authentication
+        $mail->SMTPAuth = true;
+        //Username to use for SMTP authentication - use full email address for gmail
+        $mail->Username = $myemaillogin;
+        //Password to use for SMTP authentication
+        $mail->Password = $myemailpassword;
+        //Set who the message is to be sent from
+        $mail->setFrom($myemail, $myname);
+        //Set an alternative reply-to address
+        $mail->addReplyTo($myemail, $myname);
+        //Set who the message is to be sent to
+        $mail->addAddress($email);
+        //Set the subject line
+        $mail->Subject = 'Nowe zamówienie numer ' . $id . ' ze sklepu.';
+        //Read an HTML message body from an external file, convert referenced images to embedded,
+        //convert HTML into a basic plain-text alternative body
+        $mail->isHTML(true);
+        $mail->Body = 'Złożyłeś nowe zamówienie w sklepie. Oto Twoje dane:<br/><br/>' .
+                    'Numer zamówienia: ' . $id . '<br />' .
+                    'Imie: ' . $imie . '<br />' .
+                    'Nazwisko: ' . $nazwisko . '<br />' .
+                    'E-mail: ' . $email . '<br />' .
+                    'Adres: ' . $adres . '<br />' .
+                    'Adres 2: ' . $adres2 . '<br />' .
+                    'Uwagi: ' . $uwagi . '<br />' .
+                    'Co kupiono: <br /><b>' . implode("<br /> ", $cokupiono) . '</b><br />' .
+                    'Łączna ilość przedmiotów: ' . $totalquantity . ' sztuk<br />'.
+                    'Do zapłacenia: ' . $totalsum . ' zł' . '<br />' .
+                    'Dane do przelewu: <br />' .
+                    'Numer konta: ' . $bankaccountnumber[0] . '<br />' .
+                    'Imie i nazwisko: ' . $bankaccountnumber[1] . '<br />' .
+                    'Adres: ' . $bankaccountnumber[2] . '<br />' .
+                    'Adres 2: '. $bankaccountnumber[3] . '<br />' .
+                    'Tytuł: Opłata za zamówienie nr ' . $id;
+        //Replace the plain text body with one created manually
+        $mail->AltBody = '';
+        //Attach an image file
+        $mail->setLanguage('pl', '/optional/path/to/language/directory/');
+        //send the message, check for errors
+        if (!$mail->send()) {
+            echo "Mailer Error: " . $mail->ErrorInfo;
+        } 
+        $mail->ClearAllRecipients();
+        $mail->Subject = 'Masz nowe zamówienie do realizacji w Twoim sklepie.';
+        $mail->addAddress($myemail);
+        $mail->Body = 'Nowe zamówienie w Twoim sklepie, oto dane kupującego. Pamiętaj, że zarządzać klientami możesz w panelu administracyjnym.<br/><br/>' .
+                    'Numer zamówienia: ' . $id . '<br />' .
+                    'Imie: ' . $imie . '<br />' .
+                    'Nazwisko: ' . $nazwisko . '<br />' .
+                    'E-mail: ' . $email . '<br />' .
+                    'Adres: ' . $adres . '<br />' .
+                    'Adres 2: ' . $adres2 . '<br />' .
+                    'Uwagi: ' . $uwagi . '<br />' .
+                    'Co kupiono: <br /><b>' . implode("<br /> ", $cokupiono) . '</b><br />' .
+                    'Łączna ilość przedmiotów: ' . $totalquantity . ' sztuk<br />'.
+                    'Do zapłacenia: ' . $totalsum . ' zł';
+        if (!$mail->send()) {
+            echo "Mailer Error: " . $mail->ErrorInfo;
+        } 
+        session_destroy();
     }
 function save_mail($mail)
 {
