@@ -7,27 +7,29 @@
     $secretKey = "6Ld4FF4UAAAAAA5Z06Z3qA054GoGxEFs_KNl9lct";
     // your bank account number and additional information used by customer to pay for your products
     $bankaccountnumber = array(
-        "50 1020 5558 1111 1389 1450 0019", // account number
-        "Piotr Kurnicki",
-        "50-539 Wrocław",
-        "Jabłeczna 26/26"
+        "", // account number
+        "", // your first name and last name
+        "", // addres 1
+        "" //addres 2
     );
     
     // shop email address
-    $myemail = 'donqrakko@gmail.com';
-    $myname = 'Piotr Kurnicki';
+    $myemail = '';
+    $myname = 'Kosciey Sklep';
     // data for your email account
-    $myemaillogin = "donqrakko@gmail.com";
-    $myemailpassword = "rgkcbubeskhepzgr";
+    $hostname = '';
+    $myemaillogin = "";
+    $myemailpassword = "";
+    
     
     // products image directory
     $directory = "../img/main/";
     
     // database configuration
     define('DB_SERVER', 'localhost');
-    define('DB_USERNAME', 'root');
+    define('DB_USERNAME', '');
     define('DB_PASSWORD', '');
-    define('DB_DATABASE', 'cart');
+    define('DB_DATABASE', '');
     $create = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD);
     // Check connection
     if ($create->connect_error) {

@@ -1,8 +1,7 @@
 <?php
-include_once "config/config.php";
 session_start();
+include_once "config/config.php";
 $product_ids = array();
-//session_destroy();
 //check if add cart button has been submitted
    
 if(filter_input(INPUT_POST, "add_to_cart")){

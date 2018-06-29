@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Include config file
 include_once "../config/config.php";
  

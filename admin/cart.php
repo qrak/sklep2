@@ -1,6 +1,6 @@
 <?php
-    include_once "../config/config.php";
     session_start();
+    include_once "../config/config.php";
     $cookie = filter_input(INPUT_COOKIE, "user");
     if(!isset($_SESSION['username']) || empty($_SESSION['username']) || !isset($cookie)){
          echo "Najpierw musisz się zalogować.";

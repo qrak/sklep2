@@ -1,6 +1,6 @@
 <?php
-    include_once "config/config.php";
     session_start();
+    include_once "config/config.php";
     if (empty($_SESSION['shopping_cart'])){
         echo 'Wracam do strony sklepu...';
         echo "<script>setTimeout(\"location.href = 'index.php';\",1500);</script>";
