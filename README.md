@@ -1,6 +1,6 @@
-# Sklep koscieya
+# Sklep internetowy
 
-Sklep Koscieya. Cechy:
+Sklep internetowy. Cechy:
 - Wykorzystuje PHP + mySQL.
 - Tworzy sam bazę danych i tabele w mysql
 - Zawiera panel admina który umożliwia wrzucanie/modyfikowanie produktów naszego sklepu, przegląd klientów.
