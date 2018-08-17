@@ -1,20 +1,16 @@
 <?php
     session_start();
     include_once "config/config.php";
-    
-
     if(!filter_input(INPUT_POST, 'submit')){
         echo '<h4>Wracam na strone sklepu...</h4>';
         echo "<script>setTimeout(\"location.href = 'index.php';\",1500);</script>";
         exit;
     }
-
     $captcha = filter_input(INPUT_POST, 'g-recaptcha-response');
     if(!filter_input(INPUT_POST, 'g-recaptcha-response')){
         echo '<h4>Wypełnij captcha.</h4>';
         exit;
     }
-
         $url = 'https://www.google.com/recaptcha/api/siteverify';
 	$data = array(
 		'secret' => $secretKey,
@@ -35,7 +31,6 @@
 	}
     use PHPMailer\PHPMailer\PHPMailer;
     require 'vendor/autoload.php';
-    
     if(filter_input(INPUT_POST, "submit")){
         $imie = mysqli_real_escape_string($conn, filter_input(INPUT_POST, "imie"));
         $nazwisko = mysqli_real_escape_string($conn, filter_input(INPUT_POST, "nazwisko"));
@@ -52,7 +47,6 @@
         foreach ($_SESSION['shopping_cart'] as $key => $product) {
             array_push($cokupiono, 'Nazwa: ' . $product['name'], 'Ilość: ' . $product['quantity'], 'Cena za sztuke: '. $product['price'] . ' zł');
         }
-
         $total = 0;
         $email_exp = '/^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/';
         if(!preg_match($email_exp,$email)) {

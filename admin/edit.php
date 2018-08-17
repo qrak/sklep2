@@ -7,16 +7,12 @@
          echo "<script>setTimeout(\"location.href = 'admin.php';\",1500);</script>";
          die();
     }
-    
     $nazwa = mysqli_real_escape_string($conn, filter_input(INPUT_POST, 'nazwa'));
     $opis = mysqli_real_escape_string($conn, filter_input(INPUT_POST, 'opis'));
     $cena = mysqli_real_escape_string($conn, filter_input(INPUT_POST, 'cena'));
     $obrazek = mysqli_real_escape_string($conn, filter_input(INPUT_POST, 'obrazek'));      
     $id = filter_input(INPUT_GET, 'id');
-    
     if(filter_input(INPUT_POST, "dodaj")){
-            
-        
         if( empty($nazwa) || empty($cena) || empty($obrazek)) {
             echo "Wypełnij wszystkie pola (opis nieobowiązkowy). Wracam do poprzedniej strony.";
             echo "<script>setTimeout(\"location.href = 'cart.php';\",1500);</script>";
@@ -37,9 +33,7 @@
             exit;
         }
     }
- 
 ?>
-
 <!DOCTYPE HTML>
 <html lang="en">
     <head>
@@ -70,7 +64,7 @@
                         ?>
                             <form method="post" action="edit.php?action=edit&id=<?php echo $product['id']; ?>" enctype="multipart/form-data">
                                 <label>Nazwa towaru</label><br/><input class="form-control form-control-sm" type="text" name="nazwa" value="<?php echo htmlspecialchars(stripslashes($product['name'])); ?>"><br/>
-                                <label>Opis towaru</label><br/><input class="form-control form-control-sm" type="text" name="opis" maxlength="300" value="<?php echo htmlspecialchars(stripslashes($product['opis'])); ?>"><br/>
+                                <label>Opis towaru, można używać tagów html</label><br/><textarea class="form-control form-control-sm" type="text" name="opis" maxlength="500"><?php echo htmlspecialchars(stripslashes($product['opis'])); ?></textarea><br/>
                                 <label>Obrazek (../img/main/nazwaobrazka.jpg)</label></br><input class="form-control form-control-sm" type="text" name="obrazek" value="<?php echo htmlspecialchars($product['image']); ?>"><br/><br/>
                                 <label>Cena</label></br><input class="form-control form-control-sm" type="number" min="0" step="0.01" name="cena" value="<?php echo htmlspecialchars($product['price']); ?>"><br/><br/>
                                 <input type="submit" name="dodaj" class="btn btn-primary" value="Zapisz">

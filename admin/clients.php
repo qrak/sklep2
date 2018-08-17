@@ -28,12 +28,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     </head>
     <body>
-   
     <div class="container-fluid">
         <a href="cart.php" class="btn btn-primary">Wróć</a><br /><br />
-         Klienci:<br />
-        <div class="col-sm-8 col-md-8" style="margin:5px; border-style: solid;">
-            <?php
+            Klienci:<br />
+            <div class="col-sm-8 col-md-8" style="margin:5px; border-style: solid;">
+<?php
                 $sql = "SELECT id, imie, nazwisko, email, adres, adres2, uwagi, cokupiono, totalsum, totalquantity FROM klient";
                 $stmt = mysqli_stmt_init($conn);
                 if(!mysqli_stmt_prepare($stmt, $sql)) {
@@ -43,7 +42,6 @@
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                 }
-            
                 if ($result->num_rows > 0) {
                     // output data of each row
                     while($row = $result->fetch_assoc()) {
@@ -62,7 +60,7 @@
                     }
                 }
 ?>
-        </div>
+            </div>
     </div>
     </body>
 </html>

@@ -14,12 +14,10 @@
             $query = "DELETE FROM products WHERE id=$id";
             // delete the entry
             $result = mysqli_query($conn, $query);
-            echo ("Wypierdolono produkt.");
+            echo ("Usunięto produkt.");
         }
     }
-
 ?>
-
 <!DOCTYPE HTML>
 <html lang="en">
     <head>
@@ -65,7 +63,6 @@
                                 <?php
                             endwhile;
                         endif;
-
                     ?>
                 </div>
                  <a href="cart.php" class="btn btn-primary">Wróć</a>

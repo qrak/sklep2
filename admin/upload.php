@@ -13,8 +13,8 @@
         $targetFile = "../img/main/" . basename($_FILES['attachment']["name"]);
         $extension = pathinfo($targetFile, PATHINFO_EXTENSION);
 
-    if($_FILES['attachment']['size'] > 300000){
-        echo "Plik jest za duży. Max 300kb";
+    if($_FILES['attachment']['size'] > 500000){
+        echo "Plik jest za duży. Max 500kb";
     }
     else if($extension != "jpeg" && $extension != "jpg" && $extension != "png"){
         echo "Tylko pliki o rozszerzeniu jpg, jpeg, png!";
